@@ -22,14 +22,7 @@ public class SwingUIDemo extends JFrame {
         //Вкладки States _________________________________________
         JTabbedPane stateTabPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         stateTabPane.setPreferredSize(new Dimension(1600, 800));
-        // Создание вкладок
-        for (int i = 1; i < 10; i++) {
-            JPanel panel = new JPanel();
-            panel.add(new JButton("State " + i));
-            panel.setName("State " + i);
-            stateTabPane.addTab("State " + i, new ImageIcon(), panel, "Press alt + " + i);
-            stateTabPane.setMnemonicAt(i - 1, String.valueOf(i).charAt(0));
-        }
+        ElementCreator.createStateTabs(stateTabPane);
 
         //Отображение пути к компоненту, с которым мы сейчас работаем
         JLabel componentPath = new JLabel("Frame");
@@ -39,12 +32,10 @@ public class SwingUIDemo extends JFrame {
         JPanel stateTabPanel = new JPanel(new VerticalLayout());
         stateTabPanel.setBounds(0, 0, 600, 800);
         stateTabPanel.add(componentPath);
-        stateTabPane.addChangeListener(e -> componentPath.setText("Frame -> " + ((JTabbedPane) e.getSource()).getSelectedComponent().getName()));
         stateTabPanel.add(stateTabPane);
-
+        stateTabPane.addChangeListener(e -> componentPath.setText("Frame -> " + ((JTabbedPane) e.getSource()).getSelectedComponent().getName()));
         //Панелька со вкладками States(Прокрутка)
         JScrollPane stateTabScrollPane = new JScrollPane(stateTabPanel);
-
         //______________________________________________________________________
 
         //Дерево States_________________________________________________________
@@ -61,23 +52,17 @@ public class SwingUIDemo extends JFrame {
         stateScrollPane.setSize(new Dimension(160, 500));
         //______________________________________________________________________
 
-        //Панелька скриптов_____________________________________________________
-        JPanel scriptTabPanel = new JPanel(new VerticalLayout());
-        scriptTabPanel.add(new JLabel("Scripts"));
-
-        //Панелька со вкладками скриптов
+        //Панелька со вкладками скриптов________________________________________
         JTabbedPane scriptsTabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
         scriptsTabbedPane.setPreferredSize(new Dimension(590, 500));
-        // Создание вкладок
-        for (int i = 1; i < 10; i++) {
-            JPanel panel = new JPanel();
-            panel.add(new JTextArea("Script " + i));
-            panel.setName("Script " + i);
-            scriptsTabbedPane.addTab("Script " + i, new ImageIcon(), panel, "Press alt + " + i);
-        }
+        ElementCreator.createScriptTabs(scriptsTabbedPane);
+
+        //Панелька скриптов
+        JPanel scriptTabPanel = new JPanel(new VerticalLayout());
+        scriptTabPanel.add(new JLabel("Scripts"));
         scriptTabPanel.add(scriptsTabbedPane);
 
-        //Панелька со вкладками скриптов(прокрутка)
+        //Панелька скриптов(прокрутка)
         JScrollPane scriptScrollPane = new JScrollPane(scriptTabPanel);
         //______________________________________________________________________
 
@@ -85,8 +70,10 @@ public class SwingUIDemo extends JFrame {
         JSplitPane verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, true);
         verticalSplit.setDividerLocation(300);
         verticalSplit.setOneTouchExpandable(true);
+
         verticalSplit.setTopComponent(stateTabScrollPane);
         verticalSplit.setBottomComponent(scriptScrollPane);
+
         //ограничения разделителя
         verticalSplit.addPropertyChangeListener(e -> {
             int dividerLocation = verticalSplit.getDividerLocation();
@@ -104,8 +91,10 @@ public class SwingUIDemo extends JFrame {
         JSplitPane horizontalSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
         horizontalSplit.setDividerLocation(140);
         horizontalSplit.setOneTouchExpandable(true);
+
         horizontalSplit.setLeftComponent(stateScrollPane);
         horizontalSplit.setRightComponent(verticalSplit);
+
         //ограничения разделителя
         horizontalSplit.addPropertyChangeListener(e -> {
             int dividerLocation = horizontalSplit.getDividerLocation();
@@ -131,6 +120,27 @@ public class SwingUIDemo extends JFrame {
 
 //создание меню и дерева (позже вынесу сюда остальное)
 class ElementCreator {
+    public static void createScriptTabs(JTabbedPane scriptsTabbedPane) {
+        // Создание вкладок
+        for (int i = 1; i < 10; i++) {
+            JPanel panel = new JPanel();
+            panel.add(new JTextArea("Script " + i));
+            panel.setName("Script " + i);
+            scriptsTabbedPane.addTab("Script " + i, new ImageIcon(), panel, "Press alt + " + i);
+        }
+    }
+
+    // Создание state вкладок
+    public static void createStateTabs(JTabbedPane stateTabPane) {
+        for (int i = 1; i < 10; i++) {
+            JPanel panel = new JPanel();
+            panel.add(new JButton("State " + i));
+            panel.setName("State " + i);
+            stateTabPane.addTab("State " + i, new ImageIcon(), panel, "Press alt + " + i);
+            stateTabPane.setMnemonicAt(i - 1, String.valueOf(i).charAt(0));
+        }
+    }
+
     //создание меню с несколькими элементами
     private static JMenu createJMenu(String name, JMenuItem... items) {
         JMenu res = new JMenu(name);
